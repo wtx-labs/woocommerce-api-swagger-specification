@@ -10,4 +10,4 @@ The WooCommerce REST API specification in Swagger 2.0 format
 ---
 
 ### Quick glance at the API in Swagger
-You can take a quick look at the API in Swagger [here](https://raw.githubusercontent.com/wtx-labs/woocommerce-api-swagger-specification/refs/heads/main/woocommerce-rest-api-swagger-specification.yml).
+You can take a quick look at the API in Swagger [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/wtx-labs/woocommerce-api-swagger-specification/refs/heads/main/woocommerce-rest-api-swagger-specification.yml).
