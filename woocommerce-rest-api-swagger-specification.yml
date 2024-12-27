@@ -24,21 +24,93 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "role"
+      - name: "context"
         in: "query"
-        description: "Limit result set to resources with a specific role. Options: all, administrator, editor, author, contributor, subscriber, customer and shop_manager. Default is customer."
+        description: "Scope under which the request is made; determines fields present in response."
         required: false
         type: "string"
-      - name: "per_page"
-        in: "query"
-        description: "Maximum number of items to be returned in result set. Default is 10."
-        required: false
-        type: "integer"
+        enum:
+          - "view"
+          - "edit"
       - name: "page"
         in: "query"
-        description: "Current page of the collection. Default is 1."
+        description: "Current page of the collection."
         required: false
         type: "integer"
+        default: 1
+      - name: "per_page"
+        in: "query"
+        description: "Maximum number of items to be returned in result set."
+        required: false
+        type: "integer"
+        default: 10
+      - name: "search"
+        in: "query"
+        description: "Limit results to those matching a string."
+        required: false
+        type: "string"
+      - name: "exclude"
+        in: "query"
+        description: "Ensure result set excludes specific IDs."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "include"
+        in: "query"
+        description: "Limit result set to specific IDs."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "after"
+        in: "query"
+        description: "Limit response to resources created after a given ISO8601 compliant date."
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "before"
+        in: "query"
+        description: "Limit response to resources created before a given ISO8601 compliant date."
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "offset"
+        in: "query"
+        description: "Offset the result set by a specific number of items."
+        required: false
+        type: "integer"
+      - name: "order"
+        in: "query"
+        description: "Order sort attribute ascending or descending (asc as default)."
+        required: false
+        type: "string"
+        enum:
+          - "asc"
+          - "desc"
+      - name: "orderby"
+        in: "query"
+        description: "Sort collection by object attribute."
+        required: false
+        type: "string"
+        enum:
+          - "id"
+          - "include"
+          - "name"
+          - "registered_date"
+          - "email"
+      - name: "email"
+        in: "query"
+        description: "Limit result set to resources with a specific email address."
+        required: false
+        type: "string"
+      - name: "role"
+        in: "query"
+        description: "Limit result set to resources with a specific role."
+        required: false
+        type: "string"
       responses:
         "200":
           description: "Returns list of customers."
@@ -410,24 +482,56 @@ definitions:
     properties:
       id:
         type: "integer"
-        description: "Unique identifier for the resource."
+        description: "Unique identifier for the resource. read-only"
+      date_created:
+        type: "string"
+        format: "date-time"
+        description: "The date the customer was created, in the site's timezone. read-only"
+      date_created_gmt:
+        type: "string"
+        format: "date-time"
+        description: "The date the customer was created, as GMT. read-only"
+      date_modified:
+        type: "string"
+        format: "date-time"
+        description: "The date the customer was last modified, in the site's timezone. read-only"
+      date_modified_gmt:
+        type: "string"
+        format: "date-time"
+        description: "The date the customer was last modified, as GMT. read-only"
       email:
         type: "string"
-        description: "The email address for the customer."
+        description: "The email address for the customer. mandatory"
       first_name:
         type: "string"
         description: "Customer first name."
       last_name:
         type: "string"
         description: "Customer last name."
+      role:
+        type: "string"
+        description: "Customer role. read-only"
       username:
         type: "string"
         description: "Customer login name."
+      password:
+        type: "string"
+        description: "Customer password. write-only"
+      billing:
+        $ref: "#/definitions/Billing"
+      shipping:
+        $ref: "#/definitions/Shipping"
+      is_paying_customer:
+        type: "boolean"
+        description: "Is the customer a paying customer? read-only"
+      avatar_url:
+        type: "string"
+        description: "Avatar URL. read-only"
       meta_data:
         type: "array"
+        description: "Meta data."
         items:
-          $ref: "#/definitions/CustomerMetaData"
-        description: "Meta data properties."
+          $ref: "#/definitions/MetaData"
   Product:
     type: "object"
     properties:
@@ -543,15 +647,15 @@ definitions:
         type: "string"
         description: "Note left by customer during checkout."
       billing:
-        $ref: "#/definitions/OrderBilling"
+        $ref: "#/definitions/Billing"
       shipping:
-        $ref: "#/definitions/OrderShipping"
+        $ref: "#/definitions/Shipping"
       line_items:
         type: "array"
         items:
           $ref: "#/definitions/OrderLineItem"
         description: "Line items data."
-  OrderBilling:
+  Billing:
     type: "object"
     properties:
       first_name:
@@ -565,10 +669,10 @@ definitions:
         description: "Company name."
       address_1:
         type: "string"
-        description: "Address line 1."
+        description: "Address line 1"
       address_2:
         type: "string"
-        description: "Address line 2."
+        description: "Address line 2"
       city:
         type: "string"
         description: "City name."
@@ -587,7 +691,7 @@ definitions:
       phone:
         type: "string"
         description: "Phone number."
-  OrderShipping:
+  Shipping:
     type: "object"
     properties:
       first_name:
@@ -601,10 +705,10 @@ definitions:
         description: "Company name."
       address_1:
         type: "string"
-        description: "Address line 1."
+        description: "Address line 1"
       address_2:
         type: "string"
-        description: "Address line 2."
+        description: "Address line 2"
       city:
         type: "string"
         description: "City name."
@@ -616,10 +720,7 @@ definitions:
         description: "Postal code."
       country:
         type: "string"
-        description: "Country code in ISO 3166-1 alpha-2 format."
-      phone:
-        type: "string"
-        description: "Phone number."
+        description: "ISO code of the country."
   OrderLineItem:
     type: "object"
     properties:
@@ -657,18 +758,6 @@ definitions:
         type: "string"
         description: "Parent product name."
   MetaData:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        description: "Meta ID."
-      key:
-        type: "string"
-        description: "Meta key."
-      value:
-        type: "string"
-        description: "Meta value."
-  CustomerMetaData:
     type: "object"
     properties:
       id:
