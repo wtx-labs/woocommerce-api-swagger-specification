@@ -65,18 +65,6 @@ paths:
         items:
           type: "integer"
         collectionFormat: "csv"
-      - name: "after"
-        in: "query"
-        description: "Limit response to resources created after a given ISO8601 compliant date."
-        required: false
-        type: "string"
-        format: "date-time"
-      - name: "before"
-        in: "query"
-        description: "Limit response to resources created before a given ISO8601 compliant date."
-        required: false
-        type: "string"
-        format: "date-time"
       - name: "offset"
         in: "query"
         description: "Offset the result set by a specific number of items."
