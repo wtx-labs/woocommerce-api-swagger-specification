@@ -597,40 +597,244 @@ definitions:
       id:
         type: "integer"
         description: "Unique identifier for the resource."
+      parent_id:
+        type: "integer"
+        description: "Parent order ID."
       number:
         type: "string"
         description: "Order number."
+      order_key:
+        type: "string"
+        description: "Order key."
+      created_via:
+        type: "string"
+        description: "Shows where the order was created."
+      version:
+        type: "string"
+        description: "Version of WooCommerce which last updated the order."
       status:
         type: "string"
-        description: "Order status. Options: pending, processing, on-hold, completed, cancelled, refunded, failed and trash. Default is pending."
+        description: "Order status."
+        enum:
+          - pending
+          - processing
+          - on-hold
+          - completed
+          - cancelled
+          - refunded
+          - failed
+      currency:
+        type: "string"
+        description: "Currency the order was created with, in ISO format."
+        enum:
+          - AED
+          - AFN
+          - ALL
+          - AMD
+          - ANG
+          - AOA
+          - ARS
+          - AUD
+          - AWG
+          - AZN
+          - BAM
+          - BBD
+          - BDT
+          - BGN
+          - BHD
+          - BIF
+          - BMD
+          - BND
+          - BOB
+          - BRL
+          - BSD
+          - BTC
+          - BTN
+          - BWP
+          - BYR
+          - BYN
+          - BZD
+          - CAD
+          - CDF
+          - CHF
+          - CLP
+          - CNY
+          - COP
+          - CRC
+          - CUC
+          - CUP
+          - CVE
+          - CZK
+          - DJF
+          - DKK
+          - DOP
+          - DZD
+          - EGP
+          - ERN
+          - ETB
+          - EUR
+          - FJD
+          - FKP
+          - GBP
+          - GEL
+          - GGP
+          - GHS
+          - GIP
+          - GMD
+          - GNF
+          - GTQ
+          - GYD 
+          - HKD
+          - HNL
+          - HRK
+          - HTG
+          - HUF
+          - IDR
+          - ILS
+          - IMP
+          - INR
+          - IQD
+          - IRR
+          - IRT
+          - ISK
+          - JEP
+          - JMD
+          - JOD
+          - JPY
+          - KES
+          - KGS
+          - KHR
+          - KMF
+          - KPW
+          - KRW
+          - KWD
+          - KYD
+          - KZT
+          - LAK
+          - LBP
+          - LKR
+          - LRD
+          - LSL
+          - LYD
+          - MAD
+          - MDL
+          - MGA
+          - MKD
+          - MMK
+          - MNT
+          - MOP
+          - MRU
+          - MUR
+          - MVR
+          - MWK
+          - MXN
+          - MYR
+          - MZN
+          - NAD
+          - NGN
+          - NIO
+          - NOK
+          - NPR
+          - NZD
+          - OMR
+          - PAB
+          - PEN
+          - PGK
+          - PHP
+          - PKR
+          - PLN
+          - PRB
+          - PYG
+          - QAR
+          - RON
+          - RSD
+          - RUB
+          - RWF
+          - SAR
+          - SBD
+          - SCR
+          - SDG
+          - SEK
+          - SGD
+          - SHP
+          - SLL
+          - SOS
+          - SRD
+          - SSP
+          - STN
+          - SYP
+          - SZL
+          - THB
+          - TJS
+          - TMT
+          - TND
+          - TOP
+          - TRY
+          - TTD
+          - TWD
+          - TZS
+          - UAH
+          - UGX
+          - USD
+          - UYU
+          - UZS
+          - VEF
+          - VES
+          - VND
+          - VUV
+          - WST
+          - XAF
+          - XCD
+          - XOF
+          - XPF
+          - YER
+          - ZAR
+          - ZMW
       date_created:
         type: "string"
-        format: "date-time"
         description: "The date the order was created, in the site's timezone."
+      date_created_gmt:
+        type: "string"
+        description: "The date the order was created, as GMT."
       date_modified:
         type: "string"
-        format: "date-time"
         description: "The date the order was last modified, in the site's timezone."
-      date_paid:
+      date_modified_gmt:
         type: "string"
-        format: "date-time"
-        description: "The date the order was paid, in the site's timezone."
-      date_completed:
+        description: "The date the order was last modified, as GMT."
+      discount_total:
         type: "string"
-        format: "date-time"
-        description: "The date the order was completed, in the site's timezone."
-      total:
+        description: "Total discount amount for the order."
+      discount_tax:
         type: "string"
-        description: "Grand total (purchased products and shipping price)."
+        description: "Total discount tax amount for the order."
       shipping_total:
         type: "string"
         description: "Total shipping amount for the order."
-      payment_method_title:
+      shipping_tax:
         type: "string"
-        description: "Payment method title."
+        description: "Total shipping tax amount for the order."
+      cart_tax:
+        type: "string"
+        description: "Sum of line item taxes only."
+      total:
+        type: "string"
+        description: "Grand total."
+      total_tax:
+        type: "string"
+        description: "Sum of all taxes."
+      prices_include_tax:
+        type: "boolean"
+        description: "True if prices included tax during checkout."
       customer_id:
         type: "integer"
-        description: "User ID who owns the order. 0 for guests. Default is 0."
+        description: "User ID who owns the order. 0 for guests."
+      customer_ip_address:
+        type: "string"
+        description: "Customer's IP address."
+      customer_user_agent:
+        type: "string"
+        description: "User agent of the customer."
       customer_note:
         type: "string"
         description: "Note left by customer during checkout."
@@ -638,11 +842,61 @@ definitions:
         $ref: "#/definitions/Billing"
       shipping:
         $ref: "#/definitions/Shipping"
+      payment_method:
+        type: "string"
+        description: "Payment method ID."
+      payment_method_title:
+        type: "string"
+        description: "Payment method title."
+      transaction_id:
+        type: "string"
+        description: "Unique transaction ID."
+      date_paid:
+        type: "string"
+        description: "The date the order was paid, in the site's timezone."
+      date_paid_gmt:
+        type: "string"
+        description: "The date the order was paid, as GMT."
+      date_completed:
+        type: "string"
+        description: "The date the order was completed, in the site's timezone."
+      date_completed_gmt:
+        type: "string"
+        description: "The date the order was completed, as GMT."
+      cart_hash:
+        type: "string"
+        description: "MD5 hash of cart items to ensure orders are not modified."
+      meta_data:
+        type: "array" 
+        items:
+          $ref: "#/definitions/MetaData"
       line_items:
-        type: "array"
+        type: "array" 
         items:
           $ref: "#/definitions/OrderLineItem"
-        description: "Line items data."
+      tax_lines:
+        type: "array" 
+        items:
+          $ref: "#/definitions/OrderTaxLine"
+      shipping_lines:
+        type: "array" 
+        items:
+          $ref: "#/definitions/OrderShippingLine"
+      fee_lines:
+        type: "array" 
+        items:
+          $ref: "#/definitions/OrderFeeLine"
+      coupon_lines:
+        type: "array" 
+        items:
+          $ref: "#/definitions/OrderCouponLine"
+      refunds:
+        type: "array" 
+        items:
+          $ref: "#/definitions/OrderRefund"
+      set_paid:
+        type: "boolean" 
+        description: "Define if the order is paid. It will set the status to processing and reduce stock items."
   Billing:
     type: "object"
     properties:
@@ -718,33 +972,168 @@ definitions:
       name:
         type: "string"
         description: "Product name."
-      product_id:
-        type: "integer"
-        description: "Product ID."
-      meta_data:
-        type: "array"
-        items:
-          $ref: "#/definitions/MetaData"
-        description: "Meta data properties."
-      sku:
+      parent_name:
         type: "string"
-        description: "Product SKU."
+        description: "Parent product name if the product is a variation."
+      product_id:
+        type: "string"
+        description: "Product ID."
       variation_id:
         type: "integer"
         description: "Variation ID, if applicable."
       quantity:
         type: "integer"
         description: "Quantity ordered."
+      tax_class:
+        type: "string"
+        description: "Tax class of product."
+      subtotal:
+        type: "string"
+        description: "Line subtotal (before discounts)."
+      subtotal_tax:
+        type: "string"
+        description: "Line subtotal tax (before discounts)."
       total:
         type: "string"
         description: "Line total (after discounts)."
+      total_tax:
+        type: "string"
+        description: "Line total tax (after discounts)."
+      taxes:
+        type: "array"
+        items:
+          $ref: "#/definitions/OrderTaxLine"
+      meta_data:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetaData"
+      sku:
+        type: "string"
+        description: "Product SKU."
       price:
         type: "number"
         format: "double"
         description: "Product price."
-      parent_name:
+  OrderTaxLine:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Item ID."
+      rate_code:
         type: "string"
-        description: "Parent product name."
+        description: "Tax rate code."
+      rate_id:
+        type: "string"
+        description: "Tax rate ID."
+      label:
+        type: "string"
+        description: "Tax rate label."
+      compound:
+        type: "boolean"
+        description: "Whether or not this is a compound tax rate."
+      tax_total:
+        type: "string"
+        description: "Tax total (not including shipping taxes)."
+      shipping_tax_total:
+        type: "string"
+        description: "Shipping tax total."
+      meta_data:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetaData"
+  OrderShippingLine:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Item ID."
+      method_title:
+        type: "string"
+        description: "Shipping method name."
+      method_id:
+        type: "string"
+        description: "Shipping method ID."
+      instance_id:
+        type: "string"
+        description: "Shipping instance ID."
+      total:
+        type: "string"
+        description: "Line total (after discounts)."
+      total_tax:
+        type: "string"
+        description: "Line total tax (after discounts)."
+      taxes:
+        type: "array"
+        items:
+          $ref: "#/definitions/OrderTaxLine"
+      meta_data:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetaData"
+  OrderFeeLine:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Item ID."
+      name:
+        type: "string"
+        description: "Fee name."
+      tax_class:
+        type: "string"
+        description: "Tax class of fee."
+      tax_status:
+        type: "string"
+        description: "Tax status of fee."
+        enum:
+          - taxable
+          - none
+      total:
+        type: "string"
+        description: "Line total (after discounts)."
+      total_tax:
+        type: "string"
+        description: "Line total tax (after discounts)."
+      taxes:
+        type: "array"
+        items:
+          $ref: "#/definitions/OrderTaxLine"
+      meta_data:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetaData"
+  OrderCouponLine:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Item ID."
+      code:
+        type: "string"
+        description: "Coupon code."
+      discount:
+        type: "string"
+        description: "Discount total."
+      discount_tax:
+        type: "string"
+        description: "Discount total tax."
+      meta_data:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetaData"
+  OrderRefund:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Refund ID."
+      reason:
+        type: "string"
+        description: "Refund reason."
+      total:
+        type: "string"
+        description: "Refund total."
   MetaData:
     type: "object"
     properties:
