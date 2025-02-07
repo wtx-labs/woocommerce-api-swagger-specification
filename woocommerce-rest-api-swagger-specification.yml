@@ -16,6 +16,33 @@ security:
   - basicAuth: []
 paths:
   /customers:
+    post:
+      tags:
+      - "Customers"
+      summary: "This API helps you to create a new customer."
+      operationId: "createCustomer"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "customer"
+        description: "Customer object with data to create."
+        required: true
+        schema:
+          $ref: "#/definitions/Customer"
+      responses:
+        "200":
+          description: "Returns specified customer."
+          schema:
+            $ref: "#/definitions/Customer"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
     get:
       tags:
       - "Customers"
