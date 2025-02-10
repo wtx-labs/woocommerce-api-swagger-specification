@@ -169,6 +169,33 @@ paths:
           schema:
             $ref: "#/definitions/ApiError"
   /products:
+    post:
+      tags:
+      - "Products"
+      summary: "This API helps you to create a new product."
+      operationId: "createProduct"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "product"
+        description: "Product object with data to create."
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        "200":
+          description: "Returns specified product."
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
     get:
       tags:
       - "Products"
