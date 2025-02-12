@@ -171,7 +171,7 @@ paths:
   /products:
     post:
       tags:
-      - "Products"
+      - "Orders"
       summary: "This API helps you to create a new product."
       operationId: "createProduct"
       produces:
@@ -349,6 +349,33 @@ paths:
           schema:
             $ref: "#/definitions/ApiError"
   /orders:
+    post:
+      tags:
+      - "Products"
+      summary: "This API helps you to create a new order."
+      operationId: "createOrder"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "product"
+        description: "Order object with data to create."
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        "200":
+          description: "Returns specified order."
+          schema:
+            $ref: "#/definitions/Order"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
     get:
       tags:
       - "Orders"
