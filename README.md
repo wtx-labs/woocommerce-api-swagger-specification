@@ -26,7 +26,7 @@ The only requirement is to preserve the original author attribution in the sourc
 
 You can take a quick look at the API in Swagger [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/wtx-labs/woocommerce-api-swagger-specification/main/woocommerce-rest-api-swagger-specification.yml).
 
-![WooCommerce REST API in Swagger Editor](wtx-labs-woocommerce-rest-api-editor-swagger-io-example.png)
+![WooCommerce REST API in Swagger Editor](wtx-labs-woocommerce-rest-api-editor-swagger20-io-example.png)
 
 ## 🚀 WooCommerce REST API Client for Java
 
