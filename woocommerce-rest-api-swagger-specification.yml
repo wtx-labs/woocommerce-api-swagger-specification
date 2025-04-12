@@ -1,3 +1,4 @@
+# specVersion: 0.1.5-alpha-20250412
 swagger: "2.0"
 info:
   description: "The REST API is a powerful part of WooCommerce which lets you read and write various parts of WooCommerce data such as orders, products, coupons, customers, and shipping zones."
