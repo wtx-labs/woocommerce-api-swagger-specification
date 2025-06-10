@@ -10,7 +10,7 @@ The WooCommerce REST API specification in Swagger 2.0 format.
 
 ## 📦 Version Information
 
-- **Current Version**: `0.1.5-alpha-20250412`
+- **Current Version**: `0.1.7-alpha-20250609`
 - **Swagger Specification Version**: `2.0`
 - **Supported WooCommerce API Version**: `v3`
 

@@ -1,4 +1,4 @@
-# specVersion: 0.1.5-alpha-20250412
+# specVersion: 0.1.7-alpha-20250609
 swagger: "2.0"
 info:
   description: "The REST API is a powerful part of WooCommerce which lets you read and write various parts of WooCommerce data such as orders, products, coupons, customers, and shipping zones."
@@ -16,7 +16,7 @@ tags:
   - name: "Orders"
   - name: "Reports"
 schemes:
-- "https"
+  - "https"
 security:
   - basicAuth: []
 paths:
@@ -58,7 +58,7 @@ paths:
       parameters:
       - name: "context"
         in: "query"
-        description: "Scope under which the request is made; determines fields present in response."
+        description: "Scope under which the request is made; determines fields present in response. Options: view and edit. Default is view."
         required: false
         type: "string"
         enum:
@@ -66,13 +66,13 @@ paths:
           - "edit"
       - name: "page"
         in: "query"
-        description: "Current page of the collection."
+        description: "Current page of the collection. Default is 1."
         required: false
         type: "integer"
         default: 1
       - name: "per_page"
         in: "query"
-        description: "Maximum number of items to be returned in result set."
+        description: "Maximum number of items to be returned in result set. Default is 10."
         required: false
         type: "integer"
         default: 10
@@ -104,7 +104,7 @@ paths:
         type: "integer"
       - name: "order"
         in: "query"
-        description: "Order sort attribute ascending or descending (asc as default)."
+        description: "Order sort attribute ascending or descending. Options: asc and desc. Default is asc."
         required: false
         type: "string"
         enum:
@@ -112,7 +112,7 @@ paths:
           - "desc"
       - name: "orderby"
         in: "query"
-        description: "Sort collection by object attribute."
+        description: "Sort collection by object attribute. Options: id, include, name and registered_date. Default is name."
         required: false
         type: "string"
         enum:
@@ -123,12 +123,12 @@ paths:
           - "email"
       - name: "email"
         in: "query"
-        description: "Limit result set to resources with a specific email address."
+        description: "Limit result set to resources with a specific email."
         required: false
         type: "string"
       - name: "role"
         in: "query"
-        description: "Limit result set to resources with a specific role. Default is customer."
+        description: "Limit result set to resources with a specific role. Options: all, administrator, editor, author, contributor, subscriber, customer and shop_manager. Default is customer."
         required: false
         type: "string"
         enum:
@@ -288,7 +288,7 @@ paths:
       parameters:
       - name: "context"
         in: "query"
-        description: "Scope under which the request is made; determines fields present in response."
+        description: "Scope under which the request is made; determines fields present in response. Options: view and edit. Default is view."
         required: false
         type: "string"
         enum:
@@ -296,13 +296,13 @@ paths:
           - "edit"
       - name: "page"
         in: "query"
-        description: "Current page of the collection."
+        description: "Current page of the collection. Default is 1."
         required: false
         type: "integer"
         default: 1
       - name: "per_page"
         in: "query"
-        description: "Maximum number of items to be returned in result set."
+        description: "Maximum number of items to be returned in result set. Default is 10."
         required: false
         type: "integer"
         default: 10
@@ -321,6 +321,21 @@ paths:
         description: "Limit response to resources published before a given ISO8601 compliant date."
         required: false
         type: "string"
+      - name: "modified_after"
+        in: "query"
+        description: "Limit response to resources modified after a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "modified_before"
+        in: "query"
+        description: "Limit response to resources modified before a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "dates_are_gmt"
+        in: "query"
+        description: "Whether to consider GMT post dates when limiting response by published or modified date."
+        required: false
+        type: "boolean"
       - name: "exclude"
         in: "query"
         description: "Ensure result set excludes specific IDs."
@@ -331,7 +346,7 @@ paths:
         collectionFormat: "csv"
       - name: "include"
         in: "query"
-        description: "Limit result set to specific IDs."
+        description: "Limit result set to specific ids."
         required: false
         type: "array"
         items:
@@ -344,7 +359,7 @@ paths:
         type: "integer"
       - name: "order"
         in: "query"
-        description: "Order sort attribute ascending or descending."
+        description: "Order sort attribute ascending or descending. Options: asc and desc. Default is desc."
         required: false
         type: "string"
         enum:
@@ -352,15 +367,20 @@ paths:
           - "desc"
       - name: "orderby"
         in: "query"
-        description: "Sort collection by object attribute."
+        description: "Sort collection by object attribute. Options: date, modified, id, include, title, slug, price, popularity, rating, and menu_order. Default is date."
         required: false
         type: "string"
         enum:
           - "date"
+          - "modified"
           - "id"
           - "include"
           - "title"
           - "slug"
+          - "price"
+          - "popularity"
+          - "rating"
+          - "menu_order"
       - name: "parent"
         in: "query"
         description: "Limit result set to those of particular parent IDs."
@@ -377,9 +397,14 @@ paths:
         items:
           type: "integer"
         collectionFormat: "csv"
+      - name: "slug"
+        in: "query"
+        description: "Limit result set to products with a specific slug."
+        required: false
+        type: "string"
       - name: "status"
         in: "query"
-        description: "Limit result set to products assigned a specific status."
+        description: "Limit result set to products assigned a specific status. Options: any, draft, pending, private and publish. Default is any."
         required: false
         type: "string"
         enum:
@@ -388,9 +413,37 @@ paths:
           - "pending"
           - "private"
           - "publish"
+        collectionFormat: "csv"
+      - name: "include_status"
+        in: "query"
+        description: "Limit result set to products with any of the specified statuses. Multiple statuses can be provided as a comma-separated list. Takes precedence over the status parameter. Options: any, future, trash, draft, pending, private, and publish."
+        required: false
+        type: "string"
+        enum:
+          - "any"
+          - "future"
+          - "trash"
+          - "draft"
+          - "pending"
+          - "private"
+          - "publish"
+        collectionFormat: "csv"
+      - name: "exclude_status"
+        in: "query"
+        description: "Exclude products from result set with any of the specified statuses. Multiple statuses can be provided as a comma-separated list. Takes precedence over the include_status parameter. Options: future, trash, draft, pending, private, and publish."
+        required: false
+        type: "string"
+        enum:
+          - "future"
+          - "trash"
+          - "draft"
+          - "pending"
+          - "private"
+          - "publish"
+        collectionFormat: "csv"
       - name: "type"
         in: "query"
-        description: "Limit result set to products assigned a specific type."
+        description: "Limit result set to products assigned a specific type. Options: simple, grouped, external and variable."
         required: false
         type: "string"
         enum:
@@ -398,6 +451,28 @@ paths:
           - "grouped"
           - "external"
           - "variable"
+      - name: "include_types"
+        in: "query"
+        description: "Limit result set to products with any of the types. Multiple statuses can be provided as a comma-separated list. Takes precedence over the type parameter. Options: simple, grouped, external and variable."
+        required: false
+        type: "string"
+        enum:
+          - "simple"
+          - "grouped"
+          - "external"
+          - "variable"
+        collectionFormat: "csv"
+      - name: "exclude_types"
+        in: "query"
+        description: "Exclude products from result set with any of the specified types. Multiple statuses can be provided as a comma-separated list. Takes precedence over the include_types parameter. Options: simple, grouped, external and variable."
+        required: false
+        type: "string"
+        enum:
+          - "simple"
+          - "grouped"
+          - "external"
+          - "variable"
+        collectionFormat: "csv"
       - name: "sku"
         in: "query"
         description: "Limit result set to products with a specific SKU."
@@ -435,9 +510,13 @@ paths:
         type: "string"
       - name: "tax_class"
         in: "query"
-        description: "Limit result set to products with a specific tax class."
+        description: "Limit result set to products with a specific tax class. Default options: standard, reduced-rate and zero-rate."
         required: false
         type: "string"
+        enum:
+          - "standard"
+          - "reduced-rate"
+          - "zero-rate"
       - name: "on_sale"
         in: "query"
         description: "Limit result set to products on sale."
@@ -455,13 +534,23 @@ paths:
         type: "string"
       - name: "stock_status"
         in: "query"
-        description: "Limit result set to products with specified stock status."
+        description: "Limit result set to products with specified stock status. Options: instock, outofstock and onbackorder."
         required: false
         type: "string"
         enum:
           - "instock"
           - "outofstock"
           - "onbackorder"
+      - name: "virtual"
+        in: "query"
+        description: "Limit result set to virtual products."
+        required: false
+        type: "boolean"
+      - name: "downloadable"
+        in: "query"
+        description: "Limit result set to downloadable products."
+        required: false
+        type: "boolean"
       responses:
         "200":
           description: "Returns list of products."
@@ -469,12 +558,12 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Product"
-        "401":
-          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
           schema:
             $ref: "#/definitions/ApiError"
-        "404":
-          description: "Not Found"
+        "401":
+          description: "Unauthorized"
           schema:
             $ref: "#/definitions/ApiError"
   /products/{productId}:
@@ -567,6 +656,369 @@ paths:
           description: "Not Found"
           schema:
             $ref: "#/definitions/ApiError"
+  /products/{productId}/variations:
+    post:
+      tags:
+      - "Product variations"
+      summary: "This API helps you to create a new product variation."
+      operationId: "createProductVariation"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of parent product for variation to create"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "variation"
+        description: "Product variation object with data to create."
+        required: true
+        schema:
+          $ref: "#/definitions/ProductVariation"
+      responses:
+        "200":
+          description: "Returns created product variation."
+          schema:
+            $ref: "#/definitions/ProductVariation"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+    get:
+      tags:
+      - "Product variations"
+      summary: "This API helps you to view all the product variations."
+      operationId: "listAllProductVariations"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of parent product for variations to return"
+        required: true
+        type: "integer"
+      - name: "context"
+        in: "query"
+        description: "Scope under which the request is made; determines fields present in response. Options: view and edit. Default is view."
+        required: false
+        type: "string"
+        enum:
+          - "view"
+          - "edit"
+      - name: "page"
+        in: "query"
+        description: "Current page of the collection. Default is 1."
+        required: false
+        type: "integer"
+        default: 1
+      - name: "per_page"
+        in: "query"
+        description: "Maximum number of items to be returned in result set. Default is 10."
+        required: false
+        type: "integer"
+        default: 10
+      - name: "search"
+        in: "query"
+        description: "Limit results to those matching a string."
+        required: false
+        type: "string"
+      - name: "after"
+        in: "query"
+        description: "Limit response to resources published after a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "before"
+        in: "query"
+        description: "Limit response to resources published before a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "modified_after"
+        in: "query"
+        description: "Limit response to resources modified after a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "modified_before"
+        in: "query"
+        description: "Limit response to resources modified before a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "dates_are_gmt"
+        in: "query"
+        description: "Whether to consider GMT post dates when limiting response by published or modified date."
+        required: false
+        type: "boolean"
+      - name: "exclude"
+        in: "query"
+        description: "Ensure result set excludes specific IDs."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "include"
+        in: "query"
+        description: "Limit result set to specific ids."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "offset"
+        in: "query"
+        description: "Offset the result set by a specific number of items."
+        required: false
+        type: "integer"
+      - name: "order"
+        in: "query"
+        description: "Order sort attribute ascending or descending. Options: asc and desc. Default is desc."
+        required: false
+        type: "string"
+        enum:
+          - "asc"
+          - "desc"
+      - name: "orderby"
+        in: "query"
+        description: "Sort collection by object attribute. Options: date, modified, id, include, title and slug. Default is date."
+        required: false
+        type: "string"
+        enum:
+          - "date"
+          - "modified"
+          - "id"
+          - "include"
+          - "title"
+          - "slug"
+      - name: "parent"
+        in: "query"
+        description: "Limit result set to those of particular parent IDs."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "parent_exclude"
+        in: "query"
+        description: "Limit result set to all items except those of a particular parent ID."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+      - name: "slug"
+        in: "query"
+        description: "Limit result set to products with a specific slug."
+        required: false
+        type: "string"
+      - name: "status"
+        in: "query"
+        description: "Limit result set to products assigned a specific status. Options: any, draft, pending, private and publish. Default is any."
+        required: false
+        type: "string"
+        enum:
+          - "any"
+          - "draft"
+          - "pending"
+          - "private"
+          - "publish"
+        collectionFormat: "csv"
+      - name: "include_status"
+        in: "query"
+        description: "Limit result set to product variations with any of the specified statuses. Multiple statuses can be provided as a comma-separated list. Takes precedence over the status parameter. Options: any, future, trash, draft, pending, private, and publish."
+        required: false
+        type: "string"
+        enum:
+          - "any"
+          - "future"
+          - "trash"
+          - "draft"
+          - "pending"
+          - "private"
+          - "publish"
+        collectionFormat: "csv"
+      - name: "exclude_status"
+        in: "query"
+        description: "Exclude product variations from result set with any of the specified statuses. Multiple statuses can be provided as a comma-separated list. Takes precedence over the include_status parameter. Options: future, trash, draft, pending, private, and publish."
+        required: false
+        type: "string"
+        enum:
+          - "future"
+          - "trash"
+          - "draft"
+          - "pending"
+          - "private"
+          - "publish"
+        collectionFormat: "csv"
+      - name: "sku"
+        in: "query"
+        description: "Limit result set to products with a specific SKU."
+        required: false
+        type: "string"
+      - name: "tax_class"
+        in: "query"
+        description: "Limit result set to products with a specific tax class. Default options: standard, reduced-rate and zero-rate."
+        required: false
+        type: "string"
+        enum:
+          - "standard"
+          - "reduced-rate"
+          - "zero-rate"
+      - name: "on_sale"
+        in: "query"
+        description: "Limit result set to products on sale."
+        required: false
+        type: "boolean"
+      - name: "min_price"
+        in: "query"
+        description: "Limit result set to products based on a minimum price."
+        required: false
+        type: "string"
+      - name: "max_price"
+        in: "query"
+        description: "Limit result set to products based on a maximum price."
+        required: false
+        type: "string"
+      - name: "stock_status"
+        in: "query"
+        description: "Limit result set to products with specified stock status. Options: instock, outofstock and onbackorder."
+        required: false
+        type: "string"
+        enum:
+          - "instock"
+          - "outofstock"
+          - "onbackorder"
+      - name: "virtual"
+        in: "query"
+        description: "Limit result set to virtual product variations."
+        required: false
+        type: "boolean"
+      - name: "downloadable"
+        in: "query"
+        description: "Limit result set to downloadable product variations."
+        required: false
+        type: "boolean"
+      responses:
+        "200":
+          description: "Returns list of product variations."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ProductVariation"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+  /products/{productId}/variations/{variationId}:
+    get:
+      tags:
+      - "Product variations"
+      summary: "This API lets you retrieve and view a specific product variation by ID."
+      operationId: "retrieveProductVariationById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of parent product for variation to return"
+        required: true
+        type: "integer"
+      - name: "variationId"
+        in: "path"
+        description: "ID of variation to return"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Returns specified product."
+          schema:
+            $ref: "#/definitions/ProductVariation"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+    put:
+      tags:
+      - "Product variations"
+      summary: "This API lets you make changes to a product variation."
+      operationId: "updateProductVariationById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of parent product for variation to update"
+        required: true
+        type: "integer"
+      - name: "variationId"
+        in: "path"
+        description: "ID of variation to update"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "variation"
+        description: "Product variation object with data to update."
+        required: true
+        schema:
+          $ref: "#/definitions/ProductVariation"
+      responses:
+        "200":
+          description: "Returns updated product variation."
+          schema:
+            $ref: "#/definitions/ProductVariation"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiError"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
+    delete:
+      tags:
+      - "Product variations"
+      summary: "This API helps you delete a product variation."
+      operationId: "deleteProductVariationById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of parent product for variation to delete"
+        required: true
+        type: "integer"
+      - name: "variationId"
+        in: "path"
+        description: "ID of variation to delete"
+        required: true
+        type: "integer"
+      - name: "force"
+        in: "query"
+        description: "Required to be true, as resource does not support trashing."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Returns deleted product variation."
+          schema:
+            $ref: "#/definitions/ProductVariation"
+        "401":
+          description: "Unauthorized"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiError"
   /orders:
     post:
       tags:
@@ -605,7 +1057,7 @@ paths:
       parameters:
       - name: "context"
         in: "query"
-        description: "Scope under which the request is made; determines fields present in response."
+        description: "Scope under which the request is made; determines fields present in response. Options: view and edit. Default is view."
         required: false
         type: "string"
         enum:
@@ -613,13 +1065,13 @@ paths:
           - "edit"
       - name: "page"
         in: "query"
-        description: "Current page of the collection."
+        description: "Current page of the collection. Default is 1."
         required: false
         type: "integer"
         default: 1
       - name: "per_page"
         in: "query"
-        description: "Maximum number of items to be returned in result set."
+        description: "Maximum number of items to be returned in result set. Default is 10."
         required: false
         type: "integer"
         default: 10
@@ -638,6 +1090,21 @@ paths:
         description: "Limit response to resources published before a given ISO8601 compliant date."
         required: false
         type: "string"
+      - name: "modified_after"
+        in: "query"
+        description: "Limit response to resources modified after a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "modified_before"
+        in: "query"
+        description: "Limit response to resources modified before a given ISO8601 compliant date."
+        required: false
+        type: "string"
+      - name: "dates_are_gmt"
+        in: "query"
+        description: "Whether to consider GMT post dates when limiting response by published or modified date."
+        required: false
+        type: "boolean"
       - name: "exclude"
         in: "query"
         description: "Ensure result set excludes specific IDs."
@@ -648,7 +1115,7 @@ paths:
         collectionFormat: "csv"
       - name: "include"
         in: "query"
-        description: "Limit result set to specific IDs."
+        description: "Limit result set to specific ids."
         required: false
         type: "array"
         items:
@@ -661,7 +1128,7 @@ paths:
         type: "integer"
       - name: "order"
         in: "query"
-        description: "Order sort attribute ascending or descending."
+        description: "Order sort attribute ascending or descending. Options: asc and desc. Default is desc."
         required: false
         type: "string"
         enum:
@@ -669,11 +1136,12 @@ paths:
           - "desc"
       - name: "orderby"
         in: "query"
-        description: "Sort collection by object attribute."
+        description: "Sort collection by object attribute. Options: date, modified, id, include, title and slug. Default is date."
         required: false
         type: "string"
         enum:
           - "date"
+          - "modified"
           - "id"
           - "include"
           - "title"
@@ -696,7 +1164,7 @@ paths:
         collectionFormat: "csv"
       - name: "status"
         in: "query"
-        description: "Limit result set to orders assigned a specific status."
+        description: "Limit result set to orders assigned a specific status. Options: any, pending, processing, on-hold, completed, cancelled, refunded, failed and trash. Default is any."
         required: false
         type: "string"
         enum:
@@ -708,6 +1176,8 @@ paths:
           - "cancelled"
           - "refunded"
           - "failed"
+          - "trash"
+        collectionFormat: "csv"
       - name: "customer"
         in: "query"
         description: "Limit result set to orders assigned a specific customer."
@@ -720,7 +1190,7 @@ paths:
         type: "integer"
       - name: "dp"
         in: "query"
-        description: "Number of decimal points to use in each resource."
+        description: "Number of decimal points to use in each resource. Default is 2."
         required: false
         type: "integer"
         default: 2
@@ -731,12 +1201,12 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Order"
-        "401":
-          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
           schema:
             $ref: "#/definitions/ApiError"
-        "404":
-          description: "Not Found"
+        "401":
+          description: "Unauthorized"
           schema:
             $ref: "#/definitions/ApiError"
   /orders/{orderId}:
@@ -753,12 +1223,6 @@ paths:
         description: "ID of order to return"
         required: true
         type: "integer"
-      - name: "dp"
-        in: "query"
-        description: "Number of decimal points to use in each resource."
-        required: false
-        type: "integer"
-        default: 2
       responses:
         "200":
           description: "Returns specified order."
@@ -835,75 +1299,72 @@ paths:
           description: "Not Found"
           schema:
             $ref: "#/definitions/ApiError"
-  /reports:
+  /reports/orders/totals:
     get:
       tags:
       - "Reports"
-      summary: "This API helps you to view all the reports."
-      operationId: "listAllReports"
+      summary: "This API lets you retrieve and view orders totals report."
+      operationId: "reportOrderTotalsSummary"
       produces:
       - "application/json"
       responses:
         "200":
-          description: "Returns list of reports."
+          description: "Returns list of products."
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Report"
+              $ref: "#/definitions/ReportOrderTotalSummary"
         "401":
           description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/ApiError"
-        "404":
-          description: "Not Found"
           schema:
             $ref: "#/definitions/ApiError"
   /reports/sales:
     get:
       tags:
       - "Reports"
-      summary: "This API helps you to view sales report."
-      operationId: "getSalesReport"
+      summary: "This API lets you retrieve and view a sales report."
+      operationId: "reportSalesSummary"
       produces:
       - "application/json"
       parameters:
       - name: "period"
         in: "query"
-        description: "Report period."
+        description: "Report period. Default is today's date. Options: week, month, last_month and year"
         required: false
         type: "string"
         enum:
-          - "day"
           - "week"
           - "month"
           - "last_month"
           - "year"
       - name: "date_min"
         in: "query"
-        description: "Start date of report."
+        description: "Return sales for a specific start date, the date need to be in the YYYY-MM-DD format."
         required: false
         type: "string"
       - name: "date_max"
         in: "query"
-        description: "End date of report."
+        description: "Return sales for a specific end date, the date need to be in the YYYY-MM-DD format."
         required: false
         type: "string"
       responses:
         "200":
-          description: "Returns sales report."
+          description: "Returns list of products."
           schema:
-            $ref: "#/definitions/SalesReport"
+            type: "array"
+            items:
+              $ref: "#/definitions/ReportSalesSummary"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiError"
         "401":
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/ApiError"
-        "404":
-          description: "Not Found"
-          schema:
-            $ref: "#/definitions/ApiError"
 securityDefinitions:
   basicAuth:
-    type: basic
+    type: "basic"
 definitions:
   Customer:
     type: "object"
@@ -1187,6 +1648,138 @@ definitions:
       menu_order:
         type: "integer"
         description: "Menu order, used to custom sort products."
+  ProductVariation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Unique identifier for the resource. read-only"
+      date_created:
+        type: "string"
+        format: "date-time"
+        description: "The date the variation was created, in the site's timezone. read-only"
+      date_created_gmt:
+        type: "string"
+        format: "date-time"
+        description: "The date the variation was created, as GMT. read-only"
+      date_modified:
+        type: "string"
+        format: "date-time"
+        description: "The date the variation was last modified, in the site's timezone. read-only"
+      date_modified_gmt:
+        type: "string"
+        format: "date-time"
+        description: "The date the variation was last modified, as GMT. read-only"
+      description:
+        type: "string"
+        description: "Variation description."
+      permalink:
+        type: "string"
+        description: "Variation URL. read-only"
+      sku:
+        type: "string"
+        description: "Unique identifier."
+      price:
+        type: "string"
+        description: "Current variation price. read-only"
+      regular_price:
+        type: "string"
+        description: "Variation product price."
+      sale_price:
+        type: "string"
+        description: "Variation sale price."
+      date_on_sale_from:
+        type: "string"
+        format: "date-time"
+        description: "Start date of sale price, in the site's timezone."
+      date_on_sale_from_gmt:
+        type: "string"
+        format: "date-time"
+        description: "Start date of sale price, as GMT."
+      date_on_sale_to:
+        type: "string"
+        format: "date-time"
+        description: "End date of sale price, in the site's timezone."
+      date_on_sale_to_gmt:
+        type: "string"
+        format: "date-time"
+        description: "End date of sale price, as GMT."
+      on_sale:
+        type: "boolean"
+        description: "Shows if the variation is on sale. read-only"
+      status:
+        type: "string"
+        description: "Variation status. Options: draft, pending, private and publish. Default is publish."
+      purchasable:
+        type: "boolean"
+        description: "Shows if the variation can be bought. read-only"
+      virtual:
+        type: "boolean"
+        description: "If the variation is virtual. Default is false."
+      downloadable:
+        type: "boolean"
+        description: "If the variation is downloadable. Default is false."
+      downloads:
+        type: "array"
+        description: "List of downloadable files."
+        items:
+          $ref: "#/definitions/Download"
+      download_limit:
+        type: "integer"
+        description: "Number of times downloadable files can be downloaded after purchase. Default is -1."
+      download_expiry:
+        type: "integer"
+        description: "Number of days until access to downloadable files expires. Default is -1."
+      tax_status:
+        type: "string"
+        description: "Tax status. Options: taxable, shipping and none. Default is taxable."
+      tax_class:
+        type: "string"
+        description: "Tax class."
+      manage_stock:
+        type: "boolean"
+        description: "Stock management at variation level. Default is false."
+      stock_quantity:
+        type: "integer"
+        description: "Stock quantity."
+      stock_status:
+        type: "string"
+        description: "Controls the stock status of the product. Options: instock, outofstock and onbackorder. Default is instock."
+      backorders:
+        type: "string"
+        description: "If managing stock, this controls if backorders are allowed. Options: no, notify and yes. Default is no."
+      backorders_allowed:
+        type: "boolean"
+        description: "Shows if backorders are allowed. read-only"
+      backordered:
+        type: "boolean"
+        description: "Shows if the variation is on backordered. read-only"
+      weight:
+        type: "string"
+        description: "Variation weight."
+      dimensions:
+        $ref: "#/definitions/Dimensions"
+      shipping_class:
+        type: "string"
+        description: "Shipping class slug."
+      shipping_class_id:
+        type: "integer"
+        description: "Shipping class ID."
+      image:
+        $ref: "#/definitions/Image"
+      attributes:
+        type: "array"
+        description: "List of attributes."
+        items:
+          $ref: "#/definitions/DefaultAttribute"
+      menu_order:
+        type: "integer"
+        description: "Menu order, used to custom sort products."
+      meta_data:
+        type: "array"
+        description: "Meta data properties."
+        items:
+          $ref: "#/definitions/MetaData"
   Download:
     type: "object"
     properties:
@@ -1687,88 +2280,64 @@ definitions:
       value:
         type: "string"
         description: "Meta value."
-  Report:
+  ReportOrderTotalSummary:
     type: "object"
     properties:
       slug:
         type: "string"
-        description: "Report slug."
-      description:
+        description: "An alphanumeric identifier for the resource."
+      name:
         type: "string"
-        description: "Report description."
-  SalesReport:
+        description: "Orders status name."
+      total:
+        type: "integer"
+        description: "Amount of orders."
+  ReportSalesSummary:
     type: "object"
     properties:
       total_sales:
         type: "string"
-        description: "Gross sales in the period."
       net_sales:
         type: "string"
-        description: "Net sales in the period."
       average_sales:
         type: "string"
-        description: "Average sales in the period."
       total_orders:
         type: "integer"
-        description: "Total of orders placed."
       total_items:
         type: "integer"
-        description: "Total of items purchased."
       total_tax:
         type: "string"
-        description: "Total charged for taxes."
       total_shipping:
         type: "string"
-        description: "Total charged for shipping."
       total_refunds:
         type: "integer"
-        description: "Total of refunded orders."
       total_discount:
         type: "string"
-        description: "Total of coupons used."
       totals_grouped_by:
         type: "string"
-        description: "Group type."
+      total_customers:
+        type: "integer"
       totals:
-        type: "array"
-        items:
-          $ref: "#/definitions/SalesReportTotal"
-  SalesReportTotal:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ReportSalesSummaryItem"
+  ReportSalesSummaryItem:
     type: "object"
     properties:
-      period:
+      sales:
         type: "string"
-        description: "Period."
       orders:
         type: "integer"
-        description: "Number of orders."
-      products:
+      items:
         type: "integer"
-        description: "Number of products."
-      coupons:
-        type: "integer"
-        description: "Number of coupons."
-      coupons_amount:
-        type: "string"
-        description: "Amount of coupons."
-      shipping:
-        type: "string"
-        description: "Amount of shipping."
       tax:
         type: "string"
-        description: "Amount of tax."
-      total_sales:
+      shipping:
         type: "string"
-        description: "Total sales."
-      net_sales:
+      discount:
         type: "string"
-        description: "Net sales."
-      avg_order_value:
-        type: "string"
-        description: "Average order value."
-      avg_items_per_order:
-        type: "number"
-        description: "Average items per order."
+      customers:
+        type: "integer"
   ApiError:
     type: "object"
     properties:
