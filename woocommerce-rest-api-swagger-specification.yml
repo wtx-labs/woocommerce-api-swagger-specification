@@ -1,4 +1,4 @@
-# specVersion: 0.9.5
+# specVersion: 0.9.6
 swagger: '2.0'
 info:
   title: WooCommerce REST API
@@ -2500,6 +2500,9 @@ definitions:
       country:
         type: string
         description: ISO code of the country.
+      phone:
+        type: string
+        description: Phone number.
   OrderLineItem:
     type: object
     properties:
