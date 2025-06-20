@@ -1895,6 +1895,7 @@ definitions:
         description: Shows if the product can be bought.
       total_sales:
         type: integer
+        format: int32
         description: Amount of sales.
       virtual:
         type: boolean
